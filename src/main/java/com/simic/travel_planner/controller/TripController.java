@@ -2,15 +2,20 @@ package com.simic.travel_planner.controller;
 
 import com.simic.travel_planner.dto.TripDto;
 import com.simic.travel_planner.security.UserPrincipal;
+import com.simic.travel_planner.service.ReportService;
 import com.simic.travel_planner.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @RestController
@@ -19,9 +24,12 @@ public class TripController {
 
     private final TripService tripService;
 
+    private final ReportService reportService;
+
     @Autowired
-    public TripController(TripService tripService) {
+    public TripController(TripService tripService, ReportService reportService) {
         this.tripService = tripService;
+        this.reportService = reportService;
     }
 
     @GetMapping(produces = "application/json; charset=UTF-8")
@@ -69,5 +77,19 @@ public class TripController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can't delete trip.");
         }
+    }
+
+    @GetMapping(path = "/report", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<InputStreamResource> getReport() {
+        ByteArrayInputStream reportFileStream = reportService.getTripsReport();
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=report.pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(reportFileStream));
     }
 }
