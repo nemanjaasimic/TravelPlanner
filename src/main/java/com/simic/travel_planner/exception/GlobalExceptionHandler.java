@@ -1,11 +1,13 @@
 package com.simic.travel_planner.exception;
 
 import com.simic.travel_planner.dto.ApiResponse;
+import com.simic.travel_planner.model.Trip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -63,6 +65,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return getObjectResponseEntity(ex, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(TripNotFoundException.class)
+    public ResponseEntity<Object> handleTripNotFoundException(TripNotFoundException ex) {
+        return getObjectResponseEntity(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TripException.class)
+    public ResponseEntity<Object> handleTripException(TripException ex) {
+        return getObjectResponseEntity(ex, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DeletionException.class)
+    public ResponseEntity<Object> handleDeletionException(DeletionException ex) {
+        return getObjectResponseEntity(ex, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        return getObjectResponseEntity(ex, HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Object> handleApiException(ApiException ex) {

@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JwtAuthDto login(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(
+        final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getUsernameOrEmail(),
                         loginDto.getPassword()
@@ -57,9 +57,9 @@ public class UserServiceImpl implements UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User user = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail())
+        final User user = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail())
                 .orElseThrow(() -> new UserNotFoundException("No user with given username or email found!"));
-        String jwt = tokenProvider.generateAuthToken(authentication);
+        final String jwt = tokenProvider.generateAuthToken(authentication);
         return new JwtAuthDto(jwt, user.getRole().getName());
     }
 
@@ -75,14 +75,14 @@ public class UserServiceImpl implements UserService {
 
         // Finds role with name ROLE_USER
         // newly registered user has default USER role which has id 1
-        Role userRole = roleRepository.findById(1).orElseThrow(() -> new ApiException("User Role not set."));
+        final Role userRole = roleRepository.findById(1).orElseThrow(() -> new ApiException("User Role not set."));
 
         // Creating user's account
-        User user = new User(registerDto);
+        final User user = new User(registerDto);
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         user.setRole(userRole);
 
-        User savedUser = userRepository.save(user);
+        final User savedUser = userRepository.save(user);
         return new UserDto(savedUser);
     }
 }

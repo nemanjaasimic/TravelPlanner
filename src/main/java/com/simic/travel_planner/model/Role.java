@@ -26,7 +26,7 @@ public class Role implements Serializable {
     private String name;
 
     //bi-directional many-to-one association to User
-    @OneToMany(mappedBy="role")
+    @OneToMany(mappedBy="role", fetch = FetchType.LAZY)
     private List<User> users;
 
 }

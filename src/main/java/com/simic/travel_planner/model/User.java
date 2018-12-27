@@ -11,6 +11,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -51,11 +52,15 @@ public class User implements Serializable {
     private String phoneNumber;
 
     @NotNull
+    @Column(unique = true)
     private String username;
 
     @ManyToOne
     @JoinColumn(name="ROLE_ID")
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Trip> trips;
 
     public User(RegisterDto registerDto) {
         this.username = registerDto.getUsername();
