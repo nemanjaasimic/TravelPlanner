@@ -61,8 +61,7 @@ public class TripServiceImpl implements TripService {
                     if(trip.getComment().toLowerCase().contains(comment.toLowerCase())) {
                         trips.add(trip);
                     }
-                }
-                else {
+                } else {
                     trips.add(trip);
                 }
             }
@@ -136,7 +135,7 @@ public class TripServiceImpl implements TripService {
 
             trip.setStartDate(tripDto.getStartDate());
             trip.setEndDate(tripDto.getEndDate());
-            if(trip.getComment() != null) {
+            if(tripDto.getComment() != null) {
                 trip.setComment(tripDto.getComment());
             }
 
